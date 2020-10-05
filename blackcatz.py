@@ -20,7 +20,7 @@ import feedparser
 import unidecode
 
 c = httplib.HTTPSConnection("acktic.github.io")
-c.request("GET", "/rss.js")
+c.request("GET", "/head.js")
 response = c.getresponse()
 print response.status, response.reason
 data = response.read()
