@@ -10,3 +10,7 @@ import re
 import random
 import feedparser
 import unidecode
+
+# Last Commit
+
+acktic.github.io/js/head.js now single line
