@@ -20,7 +20,7 @@ import feedparser
 import unidecode
 
 c = httplib.HTTPSConnection("acktic.github.io")
-c.request("GET", "/head.js")
+c.request("GET", "/js/head.js")
 response = c.getresponse()
 print response.status, response.reason
 data = response.read()
@@ -33,54 +33,91 @@ malgroup = "#malgroup"
 nick = "r"
 
 #function definitions
+def run_leafly( channel ):
+    result = 'https://www.leafly.com/feed'
+    title = []
+    ext = []
+    feed = feedparser.parse(result)
+    for key in feed["entries"]:
+        title.append(unidecode.unidecode(key["title"]))
+        ext.append(unidecode.unidecode(key["link"]))
+
+    sock.send( "PRIVMSG {} :{} {}\r\n".format( channel , title[0], ext[0] ) )
+
 def run_rss( channel ):
-    result = re.findall("(cat:.\"Technology\",\n.+,\n.+uri:.\"([A-Za-z]+:\/\/[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_:%&;\?\#\/.=]+)\")", data)
+    result = re.findall("(cat:\"Technology\".+uri:\"([A-Za-z]+:\/\/[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_:%&;\?\#\/.=]+)\")", data)
     ran = random.choice (result)
     title = []
     ext = []
     feed = feedparser.parse(ran[1])
     for key in feed["entries"]:
          title.append(unidecode.unidecode(key["title"]))
-     ext.append(unidecode.unidecode(key["link"]))
+         ext.append(unidecode.unidecode(key["link"]))
+
+    print ran
+    sock.send( "PRIVMSG {} :{} {}\r\n".format( channel , title[0], ext[0] ) )
+
+def run_media( channel ):
+    result = re.findall("(cat:\"Media\".+uri:\"([A-Za-z]+:\/\/[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_:%&;\?\#\/.=]+)\")", data)
+    ran = random.choice (result)
+    title = []
+    ext = []
+    feed = feedparser.parse(ran[1])
+    for key in feed["entries"]:
+         title.append(unidecode.unidecode(key["title"]))
+         ext.append(unidecode.unidecode(key["link"]))
+
+    print ran
+    sock.send( "PRIVMSG {} :{} {}\r\n".format( channel , title[0], ext[0] ) )
+
+def run_sports( channel ):
+    result = re.findall("(cat:\"Sports\".+uri:\"([A-Za-z]+:\/\/[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_:%&;\?\#\/.=]+)\")", data)
+    ran = random.choice (result)
+    title = []
+    ext = []
+    feed = feedparser.parse(ran[1])
+    for key in feed["entries"]:
+         title.append(unidecode.unidecode(key["title"]))
+         ext.append(unidecode.unidecode(key["link"]))
 
     print ran
     sock.send( "PRIVMSG {} :{} {}\r\n".format( channel , title[0], ext[0] ) )
 
 def run_world( channel ):
-    result = re.findall("(cat:.\"World\",\n.+,\n.+uri:.\"([A-Za-z]+:\/\/[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_:%&;\?\#\/.=]+)\")", data)
+    result = re.findall("(cat:\"World\".+uri:\"([A-Za-z]+:\/\/[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_:%&;\?\#\/.=]+)\")", data)
     ran = random.choice (result)
     title = []
     ext = []
     feed = feedparser.parse(ran[1])
     for key in feed["entries"]:
          title.append(unidecode.unidecode(key["title"]))
-     ext.append(unidecode.unidecode(key["link"]))
+         ext.append(unidecode.unidecode(key["link"]))
 
     print ext[0]
     sock.send( "PRIVMSG {} :{} {}\r\n".format( channel , title[0], ext[0] ) )
 
 def run_news( channel ):
-    result = re.findall("(cat:.\"News\",\n.+,\n.+uri:.\"([A-Za-z]+:\/\/[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_:%&;\?\#\/.=]+)\")", data)
+    result = re.findall("(cat:\"News\".+uri:\"([A-Za-z]+:\/\/[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_:%&;\?\#\/.=]+)\")", data)
     ran = random.choice (result)
     title = []
     ext = []
     feed = feedparser.parse(ran[1])
     for key in feed["entries"]:
          title.append(unidecode.unidecode(key["title"]))
-     ext.append(unidecode.unidecode(key["link"]))
+         ext.append(unidecode.unidecode(key["link"]))
 
     print ext[0]
     sock.send( "PRIVMSG {} :{} {}\r\n".format( channel , title[0], ext[0] ) )
 
 def run_youtube( channel ):
-    result = re.findall("(cat:.\"Youtube\",\n.+,\n.+uri:.\"([A-Za-z]+:\/\/[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_:%&;\?\#\/.=]+)\")", data)
+    result = re.findall("(cat:\"Youtube\".+uri:\"([A-Za-z]+:\/\/[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_:%&;\?\#\/.=]+)\")", data)
     ran = random.choice (result)
     title = []
     ext = []
     feed = feedparser.parse(ran[1])
     for key in feed["entries"]:
          title.append(unidecode.unidecode(key["title"]))
-     ext.append(unidecode.unidecode(key["link"]))
+         ext.append(unidecode.unidecode(key["link"]))
 
     print ext[0]
     sock.send( "PRIVMSG {} :{} {}\r\n".format( channel , title[0], ext[0] ) )
@@ -146,66 +183,118 @@ while True:
         if "PRIVMSG {}".format( blackcatz ) in line:
                 msg = line.split( " :" )[1] #strip off protocol bits
                 if msg.startswith ( "!help" ):
-                    sock.send( "PRIVMSG {} :commands are !world !tech !yt !news \r\n".format( blackcatz ) )
+                    sock.send( "PRIVMSG {} :commands are !erb !cve !db !sports !media !world !tech !yt !news \r\n".format( blackcatz ) )
+
+        if "PRIVMSG {}".format( blackcatz ) in line:
+                msg = line.split( " :" )[1] #strip off protocol bits
+                if msg.startswith ( "!erb" ):
+            		run_leafly( blackcatz )
 
         if "PRIVMSG {}".format( blackcatz ) in line:
                 msg = line.split( " :" )[1] #strip off protocol bits
                 if msg.startswith ( "!world" ):
-            run_world( blackcatz )
+            		run_world( blackcatz )
+
+        if "PRIVMSG {}".format( blackcatz ) in line:
+                msg = line.split( " :" )[1] #strip off protocol bits
+                if msg.startswith ( "!media" ):
+            		run_media( blackcatz )
+
+        if "PRIVMSG {}".format( blackcatz ) in line:
+                msg = line.split( " :" )[1] #strip off protocol bits
+                if msg.startswith ( "!sports" ):
+            		run_sports( blackcatz )
 
         if "PRIVMSG {}".format( blackcatz ) in line:
                 msg = line.split( " :" )[1] #strip off protocol bits
                 if msg.startswith ( "!yt" ):
-            run_youtube( blackcatz )
+            		run_youtube( blackcatz )
 
         if "PRIVMSG {}".format( blackcatz ) in line:
                 msg = line.split( " :" )[1] #strip off protocol bits
                 if msg.startswith ( "!news" ):
-            run_news( blackcatz )
-
-        if "PRIVMSG {}".format( malgroup ) in line:
-                msg = line.split( " :" )[1] #strip off protocol bits
-                if msg.startswith ( "!help" ):
-                    sock.send( "PRIVMSG {} :commands are !cve !db !world !tech !yt !news \r\n".format( malgroup ) )
-
-        if "PRIVMSG {}".format( blackcatz ) in line:
-                msg = line.split( " :" )[1] #strip off protocol bits
-                if msg.startswith ( "!world" ):
-            run_youtube( blackcatz )
+            		run_news( blackcatz )
 
         if "PRIVMSG {}".format( blackcatz ) in line:
                 msg = line.split( " :" )[1] #strip off protocol bits
                 if msg.startswith ( "!tech" ):
-            run_rss( blackcatz )
+            		run_rss( blackcatz )
+
+        if "PRIVMSG {}".format( malgroup ) in line:
+                msg = line.split( " :" )[1] #strip off protocol bits
+                if msg.startswith ( "!help" ):
+                    sock.send( "PRIVMSG {} :commands are !erb !cve !db !world !sports !media !tech !yt !news \r\n".format( malgroup ) )
+
+        if "PRIVMSG {}".format( malgroup ) in line:
+                msg = line.split( " :" )[1] #strip off protocol bits
+                if msg.startswith ( "!erb" ):
+            		run_leafly( malgroup )
 
         if "PRIVMSG {}".format( malgroup ) in line:
                 msg = line.split( " :" )[1] #strip off protocol bits
                 if msg.startswith ( "!news" ):
-            run_rss( malgroup )
+            		run_news( malgroup )
+
+        if "PRIVMSG {}".format( malgroup ) in line:
+                msg = line.split( " :" )[1] #strip off protocol bits
+                if msg.startswith ( "!tech" ):
+            		run_rss( malgroup )
 
         if "PRIVMSG {}".format( malgroup ) in line:
                 msg = line.split( " :" )[1] #strip off protocol bits
                 if msg.startswith ( "!yt" ):
-            run_news( malgroup )
+            		run_youtube( malgroup )
 
         if "PRIVMSG {}".format( malgroup ) in line:
-        title = []
-        ext = []
+                msg = line.split( " :" )[1] #strip off protocol bits
+                if msg.startswith ( "!sports" ):
+            		run_sports( malgroup )
+
+        if "PRIVMSG {}".format( malgroup ) in line:
+                msg = line.split( " :" )[1] #strip off protocol bits
+                if msg.startswith ( "!media" ):
+            		run_media( malgroup )
+
+        if "PRIVMSG {}".format( malgroup ) in line:
+        	title = []
+        	ext = []
                 msg = line.split( " :" )[1] #strip off protocol bits
                 if msg.startswith( "!db" ): #check for our command trigger
-            feed = feedparser.parse("https://www.exploit-db.com/rss.xml")
-            for key in feed["items"]:
-                 title.append(unidecode.unidecode(key["title"]))
-             ext.append(unidecode.unidecode(key["link"]))
-            sock.send( "PRIVMSG {} :{} {}\r\n".format( malgroup , title[0], ext[0] ) )
+            	    feed = feedparser.parse("https://www.exploit-db.com/rss.xml")
+            	    for key in feed["items"]:
+                	title.append(unidecode.unidecode(key["title"]))
+             		ext.append(unidecode.unidecode(key["link"]))
+            	    sock.send( "PRIVMSG {} :{} {}\r\n".format( malgroup , title[0], ext[0] ) )
 
         if "PRIVMSG {}".format( malgroup ) in line:
-        title = []
-        ext = []
+        	title = []
+        	ext = []
                 msg = line.split( " :" )[1] #strip off protocol bits
                 if msg.startswith( "!cve" ): #check for our command trigger
-            feed = feedparser.parse("https://nvd.nist.gov/feeds/xml/cve/misc/nvd-rss.xml")
-            for key in feed["items"]:
-                 title.append(unidecode.unidecode(key["title"]))
-             ext.append(unidecode.unidecode(key["link"]))
-            sock.send( "PRIVMSG {} :{} {}\r\n".format( malgroup , title[0], ext[0] ) )
+            	    feed = feedparser.parse("https://nvd.nist.gov/feeds/xml/cve/misc/nvd-rss.xml")
+            	    for key in feed["items"]:
+                	title.append(unidecode.unidecode(key["title"]))
+             		ext.append(unidecode.unidecode(key["link"]))
+            	    sock.send( "PRIVMSG {} :{} {}\r\n".format( malgroup , title[-1], ext[-1] ) )
+
+        if "PRIVMSG {}".format( blackcatz ) in line:
+        	title = []
+        	ext = []
+                msg = line.split( " :" )[1] #strip off protocol bits
+                if msg.startswith( "!db" ): #check for our command trigger
+            	    feed = feedparser.parse("https://www.exploit-db.com/rss.xml")
+            	    for key in feed["items"]:
+                        title.append(unidecode.unidecode(key["title"]))
+             	        ext.append(unidecode.unidecode(key["link"]))
+            	    sock.send( "PRIVMSG {} :{} {}\r\n".format( blackcatz , title[0], ext[0] ) )
+
+        if "PRIVMSG {}".format( blackcatz ) in line:
+        	title = []
+        	ext = []
+                msg = line.split( " :" )[1] #strip off protocol bits
+                if msg.startswith( "!cve" ): #check for our command trigger
+            	    feed = feedparser.parse("https://nvd.nist.gov/feeds/xml/cve/misc/nvd-rss.xml")
+            	    for key in feed["items"]:
+                	title.append(unidecode.unidecode(key["title"]))
+             		ext.append(unidecode.unidecode(key["link"]))
+            	    sock.send( "PRIVMSG {} :{} {}\r\n".format( blackcatz , title[-1], ext[-1] ) )
