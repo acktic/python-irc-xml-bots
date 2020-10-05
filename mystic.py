@@ -32,8 +32,19 @@ mystic = "#mystic"
 nick = "r"
 
 #function definitions
+def run_leafly( channel ):
+    result = 'https://www.leafly.com/feed'
+    title = []
+    ext = []
+    feed = feedparser.parse(result)
+    for key in feed["entries"]:
+        title.append(unidecode.unidecode(key["title"]))
+    	ext.append(unidecode.unidecode(key["link"]))
+
+    sock.send( "PRIVMSG {} :{} {}\r\n".format( channel , title[0], ext[0] ) )
+
 def run_rss( channel ):
-    result = re.findall("(cat:.\"Technology\",\n.+,\n.+uri:.\"([A-Za-z]+:\/\/[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_:%&;\?\#\/.=]+)\")", data)
+    result = re.findall("(cat:\"Technology\".+uri:\"([A-Za-z]+:\/\/[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_:%&;\?\#\/.=]+)\")", data)
     ran = random.choice (result)
     title = []
     ext = []
@@ -46,7 +57,7 @@ def run_rss( channel ):
     sock.send( "PRIVMSG {} :{} {}\r\n".format( channel , title[0], ext[0] ) )
 
 def run_media( channel ):
-    result = re.findall("(cat:.\"Media\",\n.+,\n.+uri:.\"([A-Za-z]+:\/\/[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_:%&;\?\#\/.=]+)\")", data)
+    result = re.findall("(cat:\"Media\".+uri:\"([A-Za-z]+:\/\/[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_:%&;\?\#\/.=]+)\")", data)
     ran = random.choice (result)
     title = []
     ext = []
@@ -59,7 +70,7 @@ def run_media( channel ):
     sock.send( "PRIVMSG {} :{} {}\r\n".format( channel , title[0], ext[0] ) )
 
 def run_sports( channel ):
-    result = re.findall("(cat:.\"Sports\",\n.+,\n.+uri:.\"([A-Za-z]+:\/\/[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_:%&;\?\#\/.=]+)\")", data)
+    result = re.findall("(cat:\"Sports\".+uri:\"([A-Za-z]+:\/\/[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_:%&;\?\#\/.=]+)\")", data)
     ran = random.choice (result)
     title = []
     ext = []
@@ -72,7 +83,7 @@ def run_sports( channel ):
     sock.send( "PRIVMSG {} :{} {}\r\n".format( channel , title[0], ext[0] ) )
 
 def run_world( channel ):
-    result = re.findall("(cat:.\"World\",\n.+,\n.+uri:.\"([A-Za-z]+:\/\/[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_:%&;\?\#\/.=]+)\")", data)
+    result = re.findall("(cat:\"World\".+uri:\"([A-Za-z]+:\/\/[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_:%&;\?\#\/.=]+)\")", data)
     ran = random.choice (result)
     title = []
     ext = []
@@ -85,7 +96,7 @@ def run_world( channel ):
     sock.send( "PRIVMSG {} :{} {}\r\n".format( channel , title[0], ext[0] ) )
 
 def run_news( channel ):
-    result = re.findall("(cat:.\"News\",\n.+,\n.+uri:.\"([A-Za-z]+:\/\/[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_:%&;\?\#\/.=]+)\")", data)
+    result = re.findall("(cat:\"News\".+uri:\"([A-Za-z]+:\/\/[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_:%&;\?\#\/.=]+)\")", data)
     ran = random.choice (result)
     title = []
     ext = []
@@ -98,7 +109,7 @@ def run_news( channel ):
     sock.send( "PRIVMSG {} :{} {}\r\n".format( channel , title[0], ext[0] ) )
 
 def run_youtube( channel ):
-    result = re.findall("(cat:.\"Youtube\",\n.+,\n.+uri:.\"([A-Za-z]+:\/\/[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_:%&;\?\#\/.=]+)\")", data)
+    result = re.findall("(cat:\"Youtube\".+uri:\"([A-Za-z]+:\/\/[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_:%&;\?\#\/.=]+)\")", data)
     ran = random.choice (result)
     title = []
     ext = []
@@ -169,7 +180,12 @@ while True:
         if "PRIVMSG {}".format( mystic ) in line:
                 msg = line.split( " :" )[1] #strip off protocol bits
                 if msg.startswith ( "!help" ):
-                    sock.send( "PRIVMSG {} :commands are !sports !media !world !tech !yt !news \r\n".format( mystic ) )
+                    sock.send( "PRIVMSG {} :commands are !erb !sports !media !world !tech !yt !news \r\n".format( mystic ) )
+
+        if "PRIVMSG {}".format( mystic ) in line:
+                msg = line.split( " :" )[1] #strip off protocol bits
+                if msg.startswith ( "!erb" ):
+           		run_leafly( mystic )
 
         if "PRIVMSG {}".format( mystic ) in line:
                 msg = line.split( " :" )[1] #strip off protocol bits
