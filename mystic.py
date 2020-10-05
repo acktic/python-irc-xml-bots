@@ -169,7 +169,7 @@ while True:
         if "PRIVMSG {}".format( mystic ) in line:
                 msg = line.split( " :" )[1] #strip off protocol bits
                 if msg.startswith ( "!help" ):
-                    sock.send( "PRIVMSG {} :commands are !cve !db !sports !media !world !tech !yt !news \r\n".format( mystic ) )
+                    sock.send( "PRIVMSG {} :commands are !sports !media !world !tech !yt !news \r\n".format( mystic ) )
 
         if "PRIVMSG {}".format( mystic ) in line:
                 msg = line.split( " :" )[1] #strip off protocol bits
