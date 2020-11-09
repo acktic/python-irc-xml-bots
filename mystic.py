@@ -20,7 +20,7 @@ import feedparser
 import unidecode
 
 c = httplib.HTTPSConnection("acktic.github.io")
-c.request("GET", "/js/head.js")
+c.request("GET", "/js/xmlAssets.js")
 response = c.getresponse()
 print response.status, response.reason
 data = response.read()
@@ -44,7 +44,7 @@ def run_leafly( channel ):
     sock.send( "PRIVMSG {} :{} {}\r\n".format( channel , title[0], ext[0] ) )
 
 def run_rss( channel ):
-    result = re.findall("(cat:\"Technology\".+uri:\"([A-Za-z]+:\/\/[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_:%&;\?\#\/.=]+)\")", data)
+    result = re.findall("(cat:\`Technology\`.+uri:\`([A-Za-z]+:\/\/[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_:%&;\?\#\/.=]+)\`)", data)
     ran = random.choice (result)
     title = []
     ext = []
@@ -57,7 +57,7 @@ def run_rss( channel ):
     sock.send( "PRIVMSG {} :{} {}\r\n".format( channel , title[0], ext[0] ) )
 
 def run_media( channel ):
-    result = re.findall("(cat:\"Media\".+uri:\"([A-Za-z]+:\/\/[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_:%&;\?\#\/.=]+)\")", data)
+    result = re.findall("(cat:\`Media\`.+uri:\`([A-Za-z]+:\/\/[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_:%&;\?\#\/.=]+)\`)", data)
     ran = random.choice (result)
     title = []
     ext = []
@@ -70,7 +70,7 @@ def run_media( channel ):
     sock.send( "PRIVMSG {} :{} {}\r\n".format( channel , title[0], ext[0] ) )
 
 def run_sports( channel ):
-    result = re.findall("(cat:\"Sports\".+uri:\"([A-Za-z]+:\/\/[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_:%&;\?\#\/.=]+)\")", data)
+    result = re.findall("(cat:\`Sports\`.+uri:\`([A-Za-z]+:\/\/[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_:%&;\?\#\/.=]+)\`)", data)
     ran = random.choice (result)
     title = []
     ext = []
@@ -83,7 +83,7 @@ def run_sports( channel ):
     sock.send( "PRIVMSG {} :{} {}\r\n".format( channel , title[0], ext[0] ) )
 
 def run_world( channel ):
-    result = re.findall("(cat:\"World\".+uri:\"([A-Za-z]+:\/\/[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_:%&;\?\#\/.=]+)\")", data)
+    result = re.findall("(cat:\`World\`.+uri:\`([A-Za-z]+:\/\/[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_:%&;\?\#\/.=]+)\`)", data)
     ran = random.choice (result)
     title = []
     ext = []
@@ -96,7 +96,7 @@ def run_world( channel ):
     sock.send( "PRIVMSG {} :{} {}\r\n".format( channel , title[0], ext[0] ) )
 
 def run_news( channel ):
-    result = re.findall("(cat:\"News\".+uri:\"([A-Za-z]+:\/\/[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_:%&;\?\#\/.=]+)\")", data)
+    result = re.findall("(cat:\`News\`.+uri:\`([A-Za-z]+:\/\/[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_:%&;\?\#\/.=]+)\`)", data)
     ran = random.choice (result)
     title = []
     ext = []
@@ -109,7 +109,7 @@ def run_news( channel ):
     sock.send( "PRIVMSG {} :{} {}\r\n".format( channel , title[0], ext[0] ) )
 
 def run_youtube( channel ):
-    result = re.findall("(cat:\"Youtube\".+uri:\"([A-Za-z]+:\/\/[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_:%&;\?\#\/.=]+)\")", data)
+    result = re.findall("(cat:\`Youtube\`.+uri:\`([A-Za-z]+:\/\/[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_:%&;\?\#\/.=]+)\`)", data)
     ran = random.choice (result)
     title = []
     ext = []
