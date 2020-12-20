@@ -76,7 +76,7 @@ def run_leafly( channel ):
     title = []
     ext = []
     feed = feedparser.parse( result )
-    if not cloudflare_triggered( feed['feed']['summary'] ):
+    if not 'summary' in feed['feed'] or not cloudflare_triggered( feed['feed']['summary'] ):
         for key in feed["entries"]:
             title.append( unidecode.unidecode( key["title"] ) )
             ext.append( unidecode.unidecode( key["link"] ) )
