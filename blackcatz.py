@@ -61,29 +61,6 @@ def has_contents( title, ext ):
         logger.debug( msg )
         return False
 
-def cloudflare_triggered( data ):
-    """ Returns true if cloudflare security has blocked us """
-    if 'Please complete the security check to access' in data:
-        prev_func = inspect.stack()[1][3]
-        msg = "Cloudflare triggered in function %s()" % prev_func
-        logger.debug( msg )
-        return True
-    else:
-        return False
-
-def run_leafly( channel ):
-    result = 'https://www.leafly.com/feed'
-    title = []
-    ext = []
-    feed = feedparser.parse( result )
-    if not cloudflare_triggered( feed['feed']['summary'] ):
-        for key in feed["entries"]:
-            title.append( unidecode.unidecode( key["title"] ) )
-            ext.append( unidecode.unidecode( key["link"] ) )
-
-        if has_contents( title, ext ):
-            sock.send( "PRIVMSG {} :{} {}\r\n".format( channel , title[0], ext[0] ) )
-
 def run_rss( channel ):
     result = re.findall("(category:\`Technology\`.+uri:\`([A-Za-z]+:\/\/[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_:%&;\?\#\/.=]+)\`)", data)
     if not result:
@@ -216,12 +193,12 @@ def run_db( channel ):
         sock.send( "PRIVMSG {} :{} {}\r\n".format( channel, title[0], ext[0] ) )
 
 def run_help( channel ):
-    sock.send( "PRIVMSG {} :commands are !erb !cve !db !sports !media !world !tech !yt !news \r\n".format( channel ) )
+    sock.send( "PRIVMSG {} :commands are !cve !db !sports !media !world !tech !yt !news \r\n".format( channel ) )
 
 def parse_line( line ):
     # hash table of <cmd>: <function>
     # @TODO: remember to update as new bot commands are added
-    supported_commands = { '!erb': run_leafly, '!cve': run_cve, '!db': run_db, '!world': run_world, '!sports': run_sports, '!media': run_media,
+    supported_commands = { '!cve': run_cve, '!db': run_db, '!world': run_world, '!sports': run_sports, '!media': run_media,
                            '!tech': run_rss, '!yt': run_youtube, '!news': run_news, '!help': run_help }
 
     #:<sender>!user@hostname PRIVMSG <channel> :<cmd>
