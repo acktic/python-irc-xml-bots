@@ -19,7 +19,7 @@ import logging
 import inspect
 
 c = httplib.HTTPSConnection("acktic.github.io")
-c.request("GET", "site/js/xmlAssets.js")
+c.request("GET", "site/js/main/Assets.js")
 response = c.getresponse()
 print response.status, response.reason
 data = response.read()
